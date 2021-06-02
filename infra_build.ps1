@@ -1,8 +1,9 @@
 #Build out the infrastructure for use in the app deploy pipeline
 
 $location = "uksouth"
-$resgroup = "njtest02"
-$clustername = "njtestappcluster01" 
+$resgroup = "njtest03"
+$clustername = "njtestappcluster02" 
+$nodecount = 1
 $nodesize = "standard_d2_v4"
 $dbname = "njpgsql02"
 
@@ -14,7 +15,7 @@ az group create `
 
 Write-Host "Create AKS Cluster $clustername"
 
-az aks create`
+az aks create `
 	--resource-group $resgroup `
 	--name $clustername `
 	--node-count $nodecount `
@@ -24,6 +25,7 @@ az aks create`
 Write-Host "Create Flexible PGSQL"
 
 az postgres flexible-server create `
+	--name $dbname `
 	--public-access all `
 	--resource-group $resgroup `
 	--location $location

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: njtest01
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: njtest01
+  template:
+    metadata:
+      labels:
+        app: njtest01
+    spec:
+      containers:
+      - name: njtest01
+        image: njgwacr.azurecr.io/njtest03:v2
+        ports:
+        - containerPort: 80
+        env:
+        - name: DATABASE_HOST
+          value: "server430267640.postgres.database.azure.com"
+        - name: DATABASE_USER
+          value: "aboardcolt9"
+        - name: DATABASE_PASSWORD
+          value: "BtAAjDi5N_rXOh29kM7ZNg"
+        - name: DATABASE_NAME
+          value: "postgres"
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "app"
+                    operator: In
+                    values:
+                    - njtest01
+              topologyKey: "kubernetes.io/hostname"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: njtest01
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8000
+  selector:
+    app: njtest01
