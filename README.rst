@@ -16,6 +16,8 @@ A straight clone of the Django framework code modified for the demo.
 
 **njtest-project.yaml**: kubernetes manifest, passes env variables in for data layer
 
+**njtestappcluster01 - CI.yml**: export of simple ADO CI pipeline
+
 ========
 Contacts
 ========
