@@ -1,0 +1,39 @@
+trigger:
+  branches:
+    include:
+    - refs/heads/master
+  paths:
+    include:
+    - /
+  batch: True
+name: $(date:yyyyMMdd)$(rev:.r)
+jobs:
+- job: Phase_1
+  displayName: Agent job 1
+  timeoutInMinutes: 0
+  pool:
+    vmImage: ubuntu-18.04
+  steps:
+  - checkout: self
+  - task: Docker@1
+    displayName: Build an image
+    inputs:
+      azureSubscriptionEndpoint: fc359325-96d4-42bb-b0a3-67822ebed618
+      azureContainerRegistry: njgwacr.azurecr.io
+      dockerFile: Dockerfile
+      imageName: njgwacr.azurecr.io/njtestappcluster01b209:$(Build.BuildId)
+      useDefaultContext: false
+  - task: Docker@1
+    displayName: Push an image
+    inputs:
+      azureSubscriptionEndpoint: fc359325-96d4-42bb-b0a3-67822ebed618
+      azureContainerRegistry: njgwacr.azurecr.io
+      command: Push an image
+      dockerFile: ''
+      imageName: njgwacr.azurecr.io/njtestappcluster01b209:$(Build.BuildId)
+  - task: KubernetesManifest@0
+    displayName: deploy
+    inputs:
+      kubernetesServiceConnection: b7dbdae4-5c47-45b5-ac52-3282087bb3b3
+      manifests: njtest-project.yaml
+...
